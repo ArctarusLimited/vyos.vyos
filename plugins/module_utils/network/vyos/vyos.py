@@ -119,10 +119,14 @@ def run_commands(module, commands, check_rc=True):
 
 def load_config(module, commands, commit=False, comment=None, confirm=None):
     connection = get_connection(module)
+    extras = {}
+
+    if confirm is not None:
+        extras["confirm"] = confirm
 
     try:
         response = connection.edit_config(
-            candidate=commands, commit=commit, comment=comment, confirm=confirm
+            candidate=commands, commit=commit, comment=comment, **extras
         )
     except ConnectionError as exc:
         module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
